@@ -29,6 +29,7 @@ const memoryGame = new MemoryGame(cards);
 
 window.addEventListener('load', (event) => {
   let html = '';
+  memoryGame.shuffleCards();
   memoryGame.cards.forEach((pic) => {
     html += `
       <div class="card" data-card-name="${pic.name}">
@@ -40,12 +41,32 @@ window.addEventListener('load', (event) => {
 
   // Add all the divs to the HTML
   document.querySelector('#memory-board').innerHTML = html;
+  
 
   // Bind the click event of each element to a function
   document.querySelectorAll('.card').forEach((card) => {
     card.addEventListener('click', () => {
       // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+      // console.log(`Card clicked: ${card}`);
+      card.classList.toggle("turned");
+      memoryGame.pickedCards.unshift(card);
+      cardOne = memoryGame.pickedCards[0].getAttribute('data-card-name')
+      if(memoryGame.pickedCards.length % 2 === 0){
+      if(!memoryGame.checkIfPair(cardOne, memoryGame.pickedCards[1].getAttribute('data-card-name')))
+      {
+        setTimeout(() => {
+          memoryGame.pickedCards[0].classList.toggle("turned");
+          memoryGame.pickedCards[1].classList.toggle("turned");
+        }, 500)
+      }
+      }
+      document.querySelector('#pairs-clicked').innerHTML = memoryGame.pairsClicked;
+      document.querySelector('#pairs-guessed').innerHTML = memoryGame.pairsGuessed;
+      if(memoryGame.checkIfFinished()){
+        setTimeout(() => {
+          alert("Congratulations Everything in the code is Working \n F5 to Reset"), 700
+        }, 600);
+      }
     });
   });
 });
